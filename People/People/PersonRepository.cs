@@ -65,4 +65,20 @@ public class PersonRepository
 
         return new List<Person>();
     }
+
+    public async Task DeletePerson(int id)
+    {
+        try
+        {
+            await Init();
+            var personToDelete = await conn.FindAsync<Person>(id);
+
+            if (personToDelete != null)
+                await conn.DeleteAsync(personToDelete);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error deleting person: {ex.Message}";
+        }
+    }
 }

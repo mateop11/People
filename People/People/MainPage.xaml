@@ -1,39 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:model="clr-namespace:People.Models"
+             xmlns:vm="clr-namespace:People.ViewModels"
              x:Class="People.MainPage" 
              BackgroundColor="{DynamicResource Light}">
 
-    <Grid Padding="5" RowSpacing="5" ColumnSpacing="5"
-          RowDefinitions="Auto,Auto,Auto,Auto,*">
+    <ContentPage.BindingContext>
+        <vm:MainPageViewModel />
+    </ContentPage.BindingContext>
 
-        <Entry x:Name="newPerson"
-           Placeholder="Enter name" />
+    <ScrollView>
+        <StackLayout Padding="10" Spacing="20">
 
-        <Button Text="Add Person"
-            Grid.Row="1"
-            Clicked="OnNewButtonClicked" />
+            
+            <Frame BackgroundColor="#D8E3E7" CornerRadius="15" Padding="10" HasShadow="True">
+                <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center">
+                    
+                    <Image Source="your_photo.jpg" 
+                           WidthRequest="80" 
+                           HeightRequest="80" 
+                           Aspect="AspectFill" 
+                           HorizontalOptions="Start" />
 
-        <Label x:Name="statusMessage"
-           TextColor="{StaticResource Primary}"
-           Grid.Row="2" />
+                    
+                    <StackLayout Grid.Column="1" Padding="10" VerticalOptions="Center">
+                        <Label Text="Mateo Pillajo" 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               TextColor="Black" />
+                        <Label Text="Edad: 22 años" 
+                               FontSize="16" 
+                               TextColor="Gray" />
+                    </StackLayout>
+                </Grid>
+            </Frame>
 
-        <Button Text="Get All People"
-            Grid.Row="3"
-            Clicked="OnGetButtonClicked" />
+            <!-- Campo para ingresar un nombre -->
+            <Entry x:Name="mateopillajo_entryNewPerson"
+                   Placeholder="Enter name"
+                   Text="{Binding NewPersonName}" />
 
-        <CollectionView x:Name="peopleList" Grid.Row="4">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Person">
-                    <Grid ColumnDefinitions="*,2*">
-                        <Label Text="{Binding Id}" TextColor="{StaticResource Primary}"/>
-                        <Label Grid.Column="1" Text="{Binding Name}" TextColor="{StaticResource Primary}"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <!-- Botón para agregar una persona -->
+            <Button x:Name="mateopillajo_btnAddPerson"
+                    Text="Add Person"
+                    Command="{Binding AddPersonCommand}" />
 
-    </Grid>
+            <!-- Mensaje de estado -->
+            <Label x:Name="mateopillajo_statusMessage"
+                   TextColor="{StaticResource Primary}"
+                   Text="{Binding StatusMessage}" />
+
+            <!-- Botón para obtener todas las personas -->
+            <Button x:Name="mateopillajo_btnGetPeople"
+                    Text="Get All People"
+                    Command="{Binding GetPeopleCommand}" />
+
+            <!-- ListView para mostrar la lista de personas -->
+            <ListView x:Name="mateopillajo_listPeople"
+                      ItemsSource="{Binding People}"
+                      ItemTapped="OnPersonTapped"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid ColumnDefinitions="*,2*">
+                                <Label Text="{Binding Id}" TextColor="{StaticResource Primary}" />
+                                <Label Grid.Column="1" Text="{Binding Name}" TextColor="{StaticResource Primary}" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+    </ScrollView>
 
 </ContentPage>

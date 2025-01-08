@@ -1,31 +1,29 @@
-﻿using People.Models;
-using System.Collections.Generic;
+﻿namespace People;
+using People.ViewModels;
+using People.Models;
 
-namespace People;
 
 public partial class MainPage : ContentPage
 {
-
-	public MainPage()
-	{
-		InitializeComponent();
-	}
-
-    public async void OnNewButtonClicked(object sender, EventArgs args)
+    public MainPage()
     {
-        statusMessage.Text = "";
-
-        await App.PersonRepo.AddNewPerson(newPerson.Text);
-        statusMessage.Text = App.PersonRepo.StatusMessage;
+        InitializeComponent();
+        BindingContext = new MainPageViewModel();
     }
 
-    public async void OnGetButtonClicked(object sender, EventArgs args)
+    private async void OnPersonTapped(object sender, ItemTappedEventArgs e)
     {
-        statusMessage.Text = "";
+        if (e.Item is not Person selectedPerson)
+            return;
 
-        List<Person> people = await App.PersonRepo.GetAllPeople();
-        peopleList.ItemsSource = people;
+        bool confirm = await DisplayAlert("Delete Person",
+            $"Are you sure you want to delete {selectedPerson.Name}?",
+            "Yes", "No");
+
+        if (confirm)
+        {
+            var viewModel = BindingContext as MainPageViewModel;
+            await viewModel.DeletePerson(selectedPerson);
+        }
     }
-
 }
-
